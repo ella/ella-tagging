@@ -11,18 +11,12 @@ from django.contrib.contenttypes.models import ContentType
 from tagging.models import TaggedItem
 
 from ella.core.models import Publishable
-from ella.core.related_finders import related_only, fillup_from_category
 
-def with_tagging(obj, count, mods=[], only_from_same_site=True):
+def related_by_tags(obj, count, collected_so_far, mods=[], only_from_same_site=True):
     """
-    Returns objects related to ``obj`` up to ``count`` by searching 
-    ``Related`` instances for the ``obj``. If not enought records is found,
-    finder tries to fill it up with matching ``TaggedItem`` instances. If 
-    there is still not enought items after doing this, related object list
-    is filled up by top objects listed in the same category as ``obj``.
+    Returns objects related to ``obj`` up to ``count`` by targets of 
+    matching ``TaggedItem`` instances.
     """
-    related = related_only(obj, count, mods, only_from_same_site)
-
     if isinstance(obj, Publishable):
         obj = obj.publishable_ptr
 
@@ -37,12 +31,11 @@ def with_tagging(obj, count, mods=[], only_from_same_site=True):
     if only_from_same_site:
         qset = qset.filter(category__site__pk=settings.SITE_ID)
 
-    to_add = TaggedItem.objects.get_related(obj, qset, num=count + len(related))
+    to_add = TaggedItem.objects.get_related(obj, qset, num=count + len(collected_so_far))
     for rel in to_add:
-        if rel != obj and rel not in related:
+        if rel != obj and rel not in collected_so_far:
             count -= 1
-            related.append(rel)
+            collected_so_far.append(rel)
         if count <= 0:
-            return related
-
-    return fillup_from_category(related, obj, count, mods, only_from_same_site)
+            return collected_so_far
+    return collected_so_far

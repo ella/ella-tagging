@@ -54,7 +54,10 @@ INSTALLED_APPS = (
 TAG_LISTINGS_PAGINATE_BY = 1
 
 RELATED_FINDERS = {
-    'default': 'ella_tagging.related_finders.with_tagging',
+    'default': (
+        'ella.core.related_finders.directly_related',
+        'ella_tagging.related_finders.related_by_tags',
+        'ella.core.related_finders.related_by_category',
+    )
 }
-DEFAULT_RELATED_FINDER = 'default'
 
