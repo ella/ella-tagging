@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import ella_tagging
 
 setup(
-    name='ella-tagging',
+    name='Ella-Tagging',
     version=ella_tagging.__versionstr__,
     description='django-tagging wrapper for Ella CMS',
     long_description='\n'.join((
