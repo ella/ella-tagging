@@ -29,11 +29,6 @@ TEMPLATE_DIRS = (
 
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.media',
-    'django.core.context_processors.auth',
-)
-
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
